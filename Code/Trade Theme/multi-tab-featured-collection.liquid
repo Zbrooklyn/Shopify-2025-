@@ -1,0 +1,459 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+
+{% if section.settings.image_shape == 'blob' %}
+  {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% unless section.settings.quick_add == 'none' %}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{% endunless %}
+
+{% if section.settings.quick_add == 'standard' %}
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+{% endif %}
+
+{% if section.settings.quick_add == 'bulk' %}
+  <script src="{{ 'quick-add-bulk.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quick-order-list.js' | asset_url }}" defer="defer"></script>
+{% endif %}
+
+<!-- Include the updated JS file -->
+<script src="{{ 'multi-tab-featured-collection.js' | asset_url }}" defer></script>
+
+{% assign first_block = section.blocks.first %}
+{% assign first_col = collections[first_block.settings.collection] %}
+
+{% style %}
+  /* Define CSS variables from the global color scheme */
+  .color-{{ section.settings.color_scheme }} {
+    --background: {{ settings.color_schemes[section.settings.color_scheme].settings.background }};
+    --text: {{ settings.color_schemes[section.settings.color_scheme].settings.text }};
+    --outline-button: {{ settings.color_schemes[section.settings.color_scheme].settings.outline_button }};
+    --shadow: {{ settings.color_schemes[section.settings.color_scheme].settings.shadow }};
+    --button-hover-bg: {{ settings.color_schemes[section.settings.color_scheme].settings.background }};
+    
+    /* Section-level active tab colors from settings */
+    --active-tab-bg: {{ section.settings.active_tab_bg }};
+    --active-tab-text: {{ section.settings.active_tab_text }};
+    --active-tab-border: {{ section.settings.active_tab_border }};
+  }
+
+  /* Section padding */
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  /* Header container: collection title and tab buttons */
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .header-container .active-collection-title {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  /* Tab buttons styling */
+  .tab-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tab-links li {
+    margin-left: 10px;
+  }
+  /* Non-active tab button */
+  .tab-links li .tab-button {
+    border: 1px solid var(--outline-button);
+    background-color: var(--background);
+    color: var(--text);
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+    border-radius: {{ section.settings.tab_button_radius }}px;
+  }
+  .tab-links li .tab-button:hover,
+  .tab-links li .tab-button:focus {
+    background-color: var(--button-hover-bg);
+  }
+  /* Active tab button uses section-level active settings */
+  .tab-links li .tab-button.active {
+    background-color: var(--active-tab-bg);
+    border-color: var(--active-tab-border);
+    color: var(--active-tab-text);
+    font-weight: bold;
+  }
+  
+  /* Tab content container */
+  .tab-content { display: none; margin-top: 20px; }
+  .tab-content.active { display: block; }
+{% endstyle %}
+
+<!-- The container outputs the override setting as JSON so it becomes "true" or "false" -->
+<div class="color-{{ section.settings.color_scheme }} isolate gradient" data-override-title="{{ section.settings.override_title | json }}">
+  <div class="{% if section.settings.full_width %}full-width{% else %}page-width{% endif %} section-{{ section.id }}-padding">
+    <div class="{% if section.settings.full_width %}full-width{% else %}page-width{% endif %} header-container">
+      <h2 id="active-collection-title" class="active-collection-title inline-richtext {{ section.settings.heading_size }} scroll-trigger{% if settings.animations_reveal_on_scroll %} animate--slide-in{% endif %}">
+        {% if section.settings.override_title %}
+          {{ section.settings.title }}
+        {% else %}
+          {{ first_col.title }}
+        {% endif %}
+      </h2>
+      <ul class="tab-links">
+        {% for block in section.blocks %}
+          {% assign col = collections[block.settings.collection] %}
+          {% if col %}
+            <li data-tab="{{ col.handle }}">
+              <button type="button" class="tab-button" data-collection-title="{{ col.title }}">
+                {{ block.settings.custom_tab_label | default: col.title }}
+              </button>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% if section.settings.description != blank %}
+      <div class="collection__description {{ section.settings.description_style }} rte scroll-trigger{% if settings.animations_reveal_on_scroll %} animate--slide-in{% endif %}">
+        {{ section.settings.description }}
+      </div>
+    {% endif %}
+    
+    {% for block in section.blocks %}
+      {% assign col = collections[block.settings.collection] %}
+      {% if col %}
+        {% assign products_to_display = col.all_products_count %}
+        {% if col.all_products_count > section.settings.products_to_show %}
+          {% assign products_to_display = section.settings.products_to_show %}
+          {% assign more_in_collection = true %}
+        {% else %}
+          {% assign more_in_collection = false %}
+        {% endif %}
+        
+        {% assign columns_mobile_int = section.settings.columns_mobile | plus: 0 %}
+        {% assign show_mobile_slider = false %}
+        {% if section.settings.swipe_on_mobile and products_to_display > columns_mobile_int %}
+          {% assign show_mobile_slider = true %}
+        {% endif %}
+        {% assign show_desktop_slider = false %}
+        {% if section.settings.enable_desktop_slider and products_to_display > section.settings.columns_desktop %}
+          {% assign show_desktop_slider = true %}
+        {% endif %}
+        
+        <div class="tab-content" id="{{ col.handle }}">
+          <div class="collection{% if section.settings.quick_add == 'bulk' %} collection-quick-add-bulk{% endif %}{% if section.settings.full_width %} collection--full-width{% endif %}" id="collection-{{ section.id }}-{{ col.handle }}" data-id="{{ section.id }}">
+            <slider-component class="slider-mobile-gutter{% if section.settings.full_width %} slider-component-full-width{% endif %}{% unless show_mobile_slider %} page-width{% endunless %}{% if show_desktop_slider == false and section.settings.full_width == false %} page-width-desktop{% endif %}{% if show_desktop_slider %} slider-component-desktop{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+              <ul id="Slider-{{ section.id }}-{{ col.handle }}" data-id="{{ section.id }}" class="grid product-grid contains-card contains-card--product{% if settings.card_style == 'standard' %} contains-card--standard{% endif %} grid--{{ section.settings.columns_desktop }}-col-desktop{% if block.settings.collection == blank %} grid--2-col-tablet-down{% else %} grid--{{ section.settings.columns_mobile }}-col-tablet-down{% endif %}{% if show_mobile_slider or show_desktop_slider %} slider{% if show_desktop_slider %} slider--desktop{% endif %}{% if show_mobile_slider %} slider--tablet grid--peek{% endif %}{% endif %}" role="list" aria-label="{{ 'general.slider.name' | t }}">
+                {% assign skip_card_product_styles = false %}
+                {% for product in col.products limit: section.settings.products_to_show %}
+                  <li id="Slide-{{ section.id }}-{{ col.handle }}-{{ forloop.index }}" class="grid__item{% if show_mobile_slider or show_desktop_slider %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" {% if settings.animations_reveal_on_scroll %} data-cascade style="--animation-order: {{ forloop.index }};" {% endif %}>
+                    {% render 'card-product',
+                      card_product: product,
+                      media_aspect_ratio: section.settings.image_ratio,
+                      image_shape: section.settings.image_shape,
+                      show_secondary_image: section.settings.show_secondary_image,
+                      show_vendor: section.settings.show_vendor,
+                      show_rating: section.settings.show_rating,
+                      skip_styles: skip_card_product_styles,
+                      section_id: section.id,
+                      quick_add: section.settings.quick_add
+                    %}
+                  </li>
+                  {% assign skip_card_product_styles = true %}
+                {% endfor %}
+              </ul>
+              {% if show_mobile_slider or show_desktop_slider %}
+                <div class="slider-buttons">
+                  <button type="button" class="slider-button slider-button--prev" name="previous" aria-label="{{ 'general.slider.previous_slide' | t }}" aria-controls="Slider-{{ section.id }}-{{ col.handle }}">
+                    <span class="svg-wrapper">
+                      {{ 'icon-caret.svg' | inline_asset_content }}
+                    </span>
+                  </button>
+                  <div class="slider-counter caption">
+                    <span class="slider-counter--current">1</span>
+                    <span aria-hidden="true"> / </span>
+                    <span class="visually-hidden">{{ 'general.slider.of' | t }}</span>
+                    <span class="slider-counter--total">{{ products_to_display }}</span>
+                  </div>
+                  <button type="button" class="slider-button slider-button--next" name="next" aria-label="{{ 'general.slider.next_slide' | t }}" aria-controls="Slider-{{ section.id }}-{{ col.handle }}">
+                    <span class="svg-wrapper">
+                      {{ 'icon-caret.svg' | inline_asset_content }}
+                    </span>
+                  </button>
+                </div>
+              {% endif %}
+            </slider-component>
+            
+            {% if section.settings.show_view_all and more_in_collection %}
+              <div class="center collection__view-all{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+                <a href="{{ col.url }}" class="{% if section.settings.view_all_style == 'link' %}link underlined-link{% elsif section.settings.view_all_style == 'solid' %}button{% else %}button button--secondary{% endif %}" aria-label="{{ 'sections.featured_collection.view_all_label' | t: collection_name: col.title | escape }}">
+                  {{ 'sections.featured_collection.view_all' | t }}
+                </a>
+              </div>
+            {% endif %}
+            
+            {% if section.settings.image_shape == 'arch' %}
+              {{ 'mask-arch.svg' | inline_asset_content }}
+            {% endif %}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Multi-Tab Coll",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Featured Collections",
+      "info": "Enter a title to override the active collection title."
+    },
+    {
+      "type": "checkbox",
+      "id": "override_title",
+      "label": "Override Active Collection Title?",
+      "default": false,
+      "info": "Check this box to use the section title above. If unchecked, the active collection title will be used."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Section Description",
+      "default": "Select collections to showcase their products."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to Show",
+      "min": 2,
+      "max": 25,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading Size",
+      "options": [
+        { "value": "h2", "label": "H2" },
+        { "value": "h1", "label": "H1" },
+        { "value": "h0", "label": "H0" },
+        { "value": "hxl", "label": "HXL" },
+        { "value": "hxxl", "label": "HXXL" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "text",
+      "id": "tab_alignment",
+      "label": "Tab Alignment (left, center, right)",
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding Top (px)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding Bottom (px)",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "default": 36
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Desktop Columns"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "default": "2",
+      "label": "Mobile Columns",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "Swipe on Mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_desktop_slider",
+      "default": false,
+      "label": "Enable Desktop Slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": false,
+      "label": "Show View All Link"
+    },
+    {
+      "type": "select",
+      "id": "view_all_style",
+      "default": "solid",
+      "label": "View All Style",
+      "options": [
+        { "value": "link", "label": "Link" },
+        { "value": "outline", "label": "Outline" },
+        { "value": "solid", "label": "Solid" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image Ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt" },
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "label": "Image Shape",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "arch", "label": "Arch" },
+        { "value": "blob", "label": "Blob" },
+        { "value": "chevronleft", "label": "Chevron Left" },
+        { "value": "chevronright", "label": "Chevron Right" },
+        { "value": "diamond", "label": "Diamond" },
+        { "value": "parallelogram", "label": "Parallelogram" },
+        { "value": "round", "label": "Round" }
+      ],
+      "default": "default"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "Show Secondary Image"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show Vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show Rating"
+    },
+    {
+      "type": "select",
+      "id": "quick_add",
+      "default": "none",
+      "label": "Quick Add",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "standard", "label": "Standard" },
+        { "value": "bulk", "label": "Bulk" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "tab_button_radius",
+      "label": "Tab Button Corner Radius (px)",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "default": 25
+    },
+    {
+      "type": "color",
+      "id": "active_tab_bg",
+      "label": "Active Tab Background",
+      "default": "#007ace"
+    },
+    {
+      "type": "color",
+      "id": "active_tab_text",
+      "label": "Active Tab Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "active_tab_border",
+      "label": "Active Tab Border",
+      "default": "#007ace"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection_tab",
+      "name": "Collection Tab",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Select Collection" },
+        { "type": "text", "id": "custom_tab_label", "label": "Custom Tab Label", "default": "Collection" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Multi-Tab Coll",
+      "category": "Collection Sections",
+      "blocks": [
+        { "type": "collection_tab" },
+        { "type": "collection_tab" },
+        { "type": "collection_tab" }
+      ]
+    }
+  ]
+}
+{% endschema %}
