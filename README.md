@@ -1,1 +1,1 @@
-# Shopify-2025-
+# Shopify 2025
