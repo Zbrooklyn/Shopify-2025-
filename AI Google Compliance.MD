@@ -1,53 +1,92 @@
-# Optimizing Google Shopping Product Descriptions for Health & Wellness Products
+Below is a sample GitHub README file that includes both a detailed background on optimizing product titles and product descriptions for Google Shopping (specifically for health & wellness products) as well as the system prompts. You can copy and paste this into your VB file or GitHub README.
 
-## Introduction
+```markdown
+# Google Shopping Feed Optimization for Health & Wellness Products
 
-In the competitive landscape of online retail, particularly within the health and wellness sector, crafting compelling and compliant product descriptions is essential. Effective descriptions not only enhance visibility on platforms like Google Shopping but also build trust with potential customers, leading to increased conversions.
+This repository contains resources and prompts designed to help you optimize your Google Shopping product titles and descriptions for health & wellness products. Our guidelines focus on clarity, compliance, keyword optimization, and readability to ensure that your listings meet Google’s requirements and perform at their best.
 
-## Importance of Optimized Product Descriptions
+---
 
-Optimized product descriptions serve multiple purposes:
+## Background & Importance
 
-- **Enhance Search Visibility:** Incorporating relevant keywords ensures that products appear in pertinent search results, increasing the likelihood of customer engagement.
+In the competitive landscape of health and wellness e-commerce, crafting clear and compliant product data is essential. Optimized product titles and descriptions:
+- **Enhance Search Visibility:** Incorporate high-impact keywords that drive more qualified traffic.
+- **Inform & Engage Customers:** Provide accurate, concise, and compelling product details.
+- **Ensure Compliance:** Follow advertising and regulatory guidelines (e.g., FDA, MHRA, TGA) to avoid disapprovals and legal issues.
+- **Improve Conversion Rates:** Structured, readable, and relevant content helps shoppers quickly understand the benefits and features, leading to higher click-through and conversion rates.
 
-- **Inform and Persuade Customers:** Clear and concise descriptions provide essential information, helping customers make informed purchasing decisions.
-
-- **Ensure Compliance:** Adhering to advertising policies and legal requirements is crucial, especially in the health sector, to avoid potential penalties or listing removals.
+---
 
 ## Compliance Guidelines for Health Products
 
-When creating product descriptions for health-related items, it's imperative to follow specific compliance rules:
+When optimizing product data for health-related items, adhere to the following rules:
 
-- **Adhere to Legal Requirements:** Ensure all claims meet country-specific legal standards and avoid promoting prohibited products. citeturn0search0
+- **Legal & Regulatory Compliance:**
+  - Ensure all claims are accurate and meet local regulatory requirements (FDA, MHRA, TGA, etc.).
+  - Avoid exaggerations or unverified claims such as “miracle cure” or “guaranteed results.”
 
-- **Avoid Misleading Claims:** Refrain from using exaggerated or unverified statements, such as "miracle cure" or "guaranteed results."
+- **Privacy & Sensitive Data:**
+  - Do not incorporate sensitive personal health data or use it for personalized targeting.
 
-- **Provide Accurate Information:** All product details, including benefits and features, must be truthful and substantiated.
+- **Factual & Non-Misleading:**
+  - Use clear, factual language.
+  - Avoid promotional text (e.g., pricing, sale dates) unless placed in designated attributes.
 
-- **Respect Privacy Standards:** Avoid retargeting medically sensitive audiences to comply with privacy and HIPAA regulations. citeturn0search10
+- **Structured & Readable Content:**
+  - Organize information with bullet points, clear separators (dashes “–”, pipes “|”, commas), and proper capitalization.
+  - Use digits rather than spelled-out numbers.
 
-## Best Practices for Crafting Product Descriptions
+- **Keyword Optimization:**
+  - Include relevant keywords naturally, especially those that shoppers are likely to use.
+  - Prioritize important keywords within the first 70 characters.
 
-To create engaging and effective product descriptions, consider the following best practices:
+---
 
-- **Know Your Audience:** Understand the needs and preferences of your target customers to tailor descriptions accordingly. citeturn0search14
+## System Prompt for Optimizing Product Titles
 
-- **Highlight Key Features and Benefits:** Clearly outline what the product does and how it can benefit the user.
+Please optimize the following product title for Google Shopping. Your optimized title should adhere to the following guidelines:
 
-- **Use Clear and Concise Language:** Avoid jargon and ensure the description is easy to understand.
+- **Keyword-Rich & Clear:**
+  - Include relevant keywords that potential shoppers would use. Focus on the product type and its primary features.
 
-- **Incorporate Bullet Points:** Use bullet points for key features to enhance readability.
+- **Length & Visibility:**
+  - Use up to 150 characters, ensuring that the most important information (key keywords, product type, main benefits) appears within the first 70 characters, as this portion is most visible on many devices.
 
-- **Include High-Quality Images:** Visuals can complement descriptions and provide a better understanding of the product. citeturn0search5
+- **Structured & Readable:**
+  - Organize the title logically with clear separators (such as dashes “–”, pipes “|”, or commas) to delineate attributes like product type, key features, differentiators (e.g., therapy type, support, relief), and variant details (e.g., color, size, material).
+
+- **Factual & Compliant for Health Products:**
+  - Use clear, accurate, and non-misleading language without exaggeration or unverified claims (avoid terms like “miracle” or “guaranteed cure”).
+  - Avoid including promotional text (e.g., pricing, sale dates) and omit brand names if not required.
+  - Ensure any health-related claims align with approved guidelines and indicate that the product provides symptom support or non-prescription relief.
+
+- **Privacy & Local Regulatory Compliance:**
+  - Do not incorporate sensitive personal health data.
+  - Ensure the title complies with local regulatory requirements (such as FDA, MHRA, TGA) by accurately describing the product without implying unauthorized medical treatments.
+
+- **Additional Best Practices:**
+  - Avoid extra white spaces and excessive punctuation.
+  - Use digits (e.g., "2" instead of "two") and proper capitalization (capitalize the first letter of each important word; avoid all caps that may appear spammy).
+  - For products with variants, include relevant attributes to distinguish each variant.
+
+**The final response must be returned in JSON format with the following structure:**
+
+```json
+{
+  "optimized_title": "Your optimized title here",
+  "explanation": "A brief explanation summarizing key changes made, including improvements in clarity, compliance, and keyword usage."
+}
+```
+
+**Here is the product title to optimize:**
+
+Migraine Relief Cap Ice Head Wrap Headache and Migraine Hat | Headache Relief with Hot/Cold Gel Head Ice Pack with Face and Eye Headache Mask Compress
+
+---
 
 ## System Prompt for Optimizing Product Descriptions
 
-To assist in creating optimized and compliant product descriptions, utilize the following system prompt:
-
-```
-**System Prompt for Optimizing Google Shopping Product Descriptions (Health & Wellness – JSON Output Required):**
-
-"Please optimize the following product description for Google Shopping. Your optimized description must meet these guidelines:
+Please optimize the following product description for Google Shopping. Your optimized description must meet these guidelines:
 
 - **Clarity & Readability:**
   - Use clear, concise, and factual language that explains the product’s features and benefits.
@@ -68,8 +107,8 @@ To assist in creating optimized and compliant product descriptions, utilize the 
 - **Keyword Optimization:**
   - Naturally incorporate relevant keywords (e.g., 'hands-free facial compress', 'hot and cold therapy', 'TMJ pain relief', 'adjustable strap') to boost search visibility without resorting to keyword stuffing.
 
-- **Output Requirements:**
-  - Return the optimized product description in JSON format using the structure below:
+**Output Requirements:**
+Return the optimized product description in JSON format using the structure below:
 
 ```json
 {
@@ -82,16 +121,32 @@ To assist in creating optimized and compliant product descriptions, utilize the 
   }
 }
 ```
-```
+
 **Product Description to Optimize:**
 
 HANDS-FREE FACIAL COMPRESS – Whether you’re in pain from a toothache or cosmetic surgery, facial pain can be unbearable. Reduce soreness and swelling directly at the source with your All Sett Health hands-free, Hot and Cold compress!  
 THE PERFECT FIT – The cold and hot compress is sure to fit thanks to the adjustable strap! Shorten it to 27" for a smaller wrap or light compression, and if you need more room, loosen it to 30.” Find relief, no matter your size or shape.  
 GENTLE & LIGHTWEIGHT – Don’t add more discomfort on top of your TMJ pain with an itchy or heavy ice pack! This face ice pack is gentle on your skin, thanks to its wrap microfiber material. It's so soothing and soft, you can even wear it while you nap.  
 4 REUSABLE HOT/COLD GEL PACKS – Use and reuse your gel packs whenever pain strikes. Whether you have persistent TMJ or recurring migraines, your All Sett Health gel face mask will reduce your pain time and time again.  
-BUILT IN POCKETS – Snuggle two reusable ice/heat packs with two extra softgel packs and hold them next to your face, right where you need them with this uniquely designed built-in pockets for additional security."
+BUILT IN POCKETS – Snuggle two reusable ice/heat packs with two extra softgel packs and hold them next to your face, right where you need them with this uniquely designed built-in pockets for additional security.
+
+---
+
+## Contributing
+
+Contributions, suggestions, and improvements are welcome! Please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+For questions or feedback, please contact [Your Name](mailto:your.email@example.com).
+
+---
+
+By using these prompts and guidelines, you can ensure that your product titles and descriptions are optimized for both user engagement and compliance with Google Shopping policies.
 ```
 
-## Conclusion
-
-By adhering to these guidelines and utilizing the provided system prompt, you can craft product descriptions that are not only engaging and informative but also compliant with Google Shopping policies. This approach will enhance your product's visibility, build customer trust, and ultimately drive sales. 
+Feel free to adjust the sections (like Installation, Usage, Contributing, License, and Contact) as needed for your project. This README template provides a complete overview and includes all relevant background, compliance rules, best practices, and system prompts in a structured format.
