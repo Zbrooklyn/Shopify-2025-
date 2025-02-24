@@ -82,7 +82,7 @@ To assist in creating optimized and compliant product descriptions, utilize the 
   }
 }
 ```
-
+```
 **Product Description to Optimize:**
 
 HANDS-FREE FACIAL COMPRESS – Whether you’re in pain from a toothache or cosmetic surgery, facial pain can be unbearable. Reduce soreness and swelling directly at the source with your All Sett Health hands-free, Hot and Cold compress!  
